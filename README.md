@@ -1,2 +1,2 @@
-# go-chi-demo
+# chi-demo
 Practice for go-chi web framework
