@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/thedevsaddam/renderer"
 	"log"
 	"net/http"
 	"os"
@@ -179,6 +180,11 @@ func UpdateEngineerProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if newEngineer.Username != "" && newEngineer.Username != engineer.Username {
+		Error(w, r, http.StatusMethodNotAllowed, errors.New("username can't be changed"))
+		return
+	}
+
 	// Updated information assignment
 	if newEngineer.FirstName != "" {
 		engineer.FirstName = newEngineer.FirstName
@@ -340,8 +346,6 @@ func UserCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		engineer := new(Engineer)
 		engineer.Username = chi.URLParam(r, "username")
-		fmt.Println("name: ", engineer.Username)
-		fmt.Println("path:", r.URL.String())
 
 		exist, err := engine.Get(engineer)
 		if err != nil {
@@ -400,6 +404,20 @@ func StartTheApp() {
 		})
 		r.Get("/something", func(w http.ResponseWriter, r *http.Request) {
 			JSON(w, r, http.StatusOK, "It's something")
+		})
+	})
+
+	r.Group(func(r chi.Router) {
+		opts := renderer.Options{
+			ParseGlobPattern: "./templates/*.html",
+		}
+
+		rnd := renderer.New(opts)
+		r.Get("/html", func(w http.ResponseWriter, r *http.Request) {
+			err := rnd.HTML(w, http.StatusOK, "demo.html", nil)
+			if err != nil {
+				Error(w, r, http.StatusInternalServerError, err)
+			}
 		})
 	})
 

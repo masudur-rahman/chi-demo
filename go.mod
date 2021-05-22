@@ -13,5 +13,6 @@ require (
 	github.com/smartystreets/assertions v1.0.1 // indirect
 	github.com/spf13/cobra v1.1.3
 	github.com/the-redback/go-oneliners v0.0.0-20190417084731-74f7694e6dae
+	github.com/thedevsaddam/renderer v1.2.0
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 )

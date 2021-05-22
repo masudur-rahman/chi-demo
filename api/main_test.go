@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -12,14 +11,14 @@ import (
 )
 
 type testData struct {
-	method   string
-	url      string
-	status   int
+	method     string
+	url        string
+	status     int
 	middleware func(next http.Handler) http.Handler
-	handler  http.HandlerFunc
-	path     string
-	body     io.Reader
-	response string
+	handler    http.HandlerFunc
+	path       string
+	body       io.Reader
+	response   string
 }
 
 func init() {
@@ -50,49 +49,49 @@ func TestShowAllEngineers(t *testing.T) {
 
 func TestShowSingleEngineer(t *testing.T) {
 	test := []testData{
-		//{
-		//	"GET",
-		//	"/engineers/masud",
-		//	200,
-		//	UserCtx,
-		//	ShowSingleEngineer,
-		//	"/engineers/{username}",
-		//	nil,
-		//	`{"username":"masud","firstname":"Masudur","lastname":"Rahman","city":"Madaripur","division":"Dhaka","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
-		//},
-		//{
-		//	"GET",
-		//	"/engineers/fahim",
-		//	200,
-		//	UserCtx,
-		//	ShowSingleEngineer,
-		//	"/engineers/{username}",
-		//	nil,
-		//	`{"username":"fahim","firstname":"Fahim","lastname":"Abrar","city":"Chittagong","division":"Chittagong","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
-		//},
-		//{
-		//	"GET",
-		//	"/engineers/tahsin",
-		//	200,
-		//	UserCtx,
-		//	ShowSingleEngineer,
-		//	"/engineers/{username}",
-		//	nil,
-		//	`{"username":"tahsin","firstname":"Tahsin","lastname":"Rahman","city":"Chittagong","division":"Chittagong","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
-		//},
-		//{
-		//	"GET",
-		//	"/engineers/jenny",
-		//	200,
-		//	UserCtx,
-		//	ShowSingleEngineer,
-		//	"/engineers/{username}",
-		//	nil,
-		//	`{"username":"jenny","firstname":"Jannatul","lastname":"Ferdows","city":"Chittagong","division":"Chittagong","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
-		//},
 		{
 			"GET",
 			"/engineers/masud",
+			200,
+			UserCtx,
+			ShowSingleEngineer,
+			"/engineers/{username}",
+			nil,
+			`{"username":"masud","firstname":"Masudur","lastname":"Rahman","city":"Madaripur","division":"Dhaka","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
+		},
+		{
+			"GET",
+			"/engineers/fahim",
+			200,
+			UserCtx,
+			ShowSingleEngineer,
+			"/engineers/{username}",
+			nil,
+			`{"username":"fahim","firstname":"Fahim","lastname":"Abrar","city":"Chittagong","division":"Chittagong","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
+		},
+		{
+			"GET",
+			"/engineers/tahsin",
+			200,
+			UserCtx,
+			ShowSingleEngineer,
+			"/engineers/{username}",
+			nil,
+			`{"username":"tahsin","firstname":"Tahsin","lastname":"Rahman","city":"Chittagong","division":"Chittagong","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
+		},
+		{
+			"GET",
+			"/engineers/jenny",
+			200,
+			UserCtx,
+			ShowSingleEngineer,
+			"/engineers/{username}",
+			nil,
+			`{"username":"jenny","firstname":"Jannatul","lastname":"Ferdows","city":"Chittagong","division":"Chittagong","position":"Software Engineer","CreatedAt":"2019-03-20T18:17:07+06:00","UpdatedAt":"2019-03-20T18:17:07+06:00","DeletedAt":"0001-01-01T00:00:00Z","Version":1}`,
+		},
+		{
+			"GET",
+			"/engineers/abcd",
 			404,
 			UserCtx,
 			ShowSingleEngineer,
@@ -164,7 +163,7 @@ func TestUpdateEngineerProfile(t *testing.T) {
 		{
 			"POST",
 			"/engineers/masud",
-			201,
+			200,
 			UserCtx,
 			UpdateEngineerProfile,
 			"/engineers/{username}",
@@ -182,17 +181,7 @@ func TestDeleteEngineer(t *testing.T) {
 	test := []testData{
 		{
 			"DELETE",
-			"/engineers/masud",
-			200,
-			UserCtx,
-			DeleteEngineer,
-			"/engineers/{username}",
-			nil,
-			`200 - Deleted Successfully`,
-		},
-		{
-			"DELETE",
-			"/engineers/fahim",
+			"/engineers/masudur",
 			200,
 			UserCtx,
 			DeleteEngineer,
@@ -221,18 +210,20 @@ func runTest(test testData, t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "bWFzdWQ6cGFzcw==")
 	responseRecorder := httptest.NewRecorder()
 
 	r := chi.NewRouter()
 
-	fmt.Println(test.method, test.path, test.url)
+	r.Route(test.path, func(r chi.Router) {
+		if test.middleware != nil {
+			r.Use(test.middleware)
+		}
+		r.Method(test.method, "/", test.handler)
+	})
 
-	if test.middleware != nil {
-		r.Use(test.middleware)
-	}
-	r.Method(test.method, test.path, test.handler)
 	r.ServeHTTP(responseRecorder, req)
-	fmt.Println(responseRecorder.Body.String())
 
 	if status := responseRecorder.Code; status != test.status {
 		t.Errorf("handler returned wrong status code: got %v expected %v", status, test.status)
