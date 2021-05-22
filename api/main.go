@@ -378,7 +378,7 @@ func StartTheApp() {
 	defer engine.Close()
 	CreateInitialEngineerProfile()
 
-	r.Get("/", Welcome)
+	//r.Get("/", Welcome)
 
 	r.Route("/engineers", func(r chi.Router) {
 		r.Use(middleware.BasicAuth("", authUser))
@@ -413,7 +413,7 @@ func StartTheApp() {
 		}
 
 		rnd := renderer.New(opts)
-		r.Get("/html", func(w http.ResponseWriter, r *http.Request) {
+		r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			err := rnd.HTML(w, http.StatusOK, "demo.html", nil)
 			if err != nil {
 				Error(w, r, http.StatusInternalServerError, err)
